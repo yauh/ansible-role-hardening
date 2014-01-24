@@ -1,0 +1,49 @@
+---
+# file: roles/hardening/tasks/hardening_debian.yml
+
+- name: Install recommended security packages
+  action: apt pkg={{ item }} state=latest
+  with_items:
+    - fail2ban
+    - logwatch
+    - unattended-upgrades
+    - chkrootkit
+    - lynis
+
+- name: Set up an account"
+  user: home=/home/{{ hardening.user }} name={{ hardening.user }} groups=sudo password={{ hardening.user_password }} shell=/bin/bash state=present
+  when: hardening.user is defined
+
+- name: Add RSA key to the remote host"
+  authorized_key: user='{{ hardening.user }}' key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+
+- name: Make logwatch mail weekly
+  action: lineinfile dest=/etc/cron.weekly/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ hardening.admin_email }} --detail high" state=present create=yes
+
+- name: Enable automatic security updates
+  apt: pkg=unattended-upgrades
+       state=latest
+       update_cache=yes
+
+- name: Configure automatic security update
+  template: dest=/etc/apt/apt.conf.d/50unattended-upgrades
+            src=unattended-upgrades.j2
+            backup=yes
+
+- name: Configure automatic updates settings
+  template: dest=/etc/apt/apt.conf.d/02periodic
+            src=apt-periodic.j2
+            backup=yes
+
+- name: Make OpenSSH secure(r)
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    state=present
+    regexp='^#?{{ item.key }}'
+    line='{{ item.key }} {{ item.value }}'
+  with_items:
+    - { key: 'PermitRootLogin', value: 'no'}
+    - { key: 'PasswordAuthentication', value: 'no'}
+    - { key: 'X11Forwarding', value: 'no'}
+  notify: restart ssh
