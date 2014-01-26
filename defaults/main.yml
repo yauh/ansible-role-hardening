@@ -1,6 +1,6 @@
 ---
 hardening:
-  #user: myusername
-  #user_password: password
+  user: myusername
+  user_password: password
   admin_email: admin@example.org
   

@@ -16,12 +16,9 @@ Role Variables
 The variables that can be passed to this role and a brief description about them are as follows.
 
 	hardening:
-	  # user that gets created
-	  user: username
-	  # corresponding password
-	  password: password
-	  # where to send logwatch emails
-	  admin_email: admin@example.org
+	  user: username                 # new user account that gets created
+	  password: password             # password to be used
+	  admin_email: admin@example.org # where to send logwatch emails
 
 Examples
 ========
