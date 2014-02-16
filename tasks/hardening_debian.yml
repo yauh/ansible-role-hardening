@@ -11,14 +11,15 @@
     - lynis
 
 - name: Set up an account"
-  user: home=/home/{{ hardening.user }} name={{ hardening.user }} groups=sudo password={{ hardening.user_password }} shell=/bin/bash state=present
-  when: hardening.user is defined
+  user: home=/home/{{ hardening_user.id }} name={{ hardening_user.id }} groups=sudo password={{ hardening_user.password }} shell={{ hardening_user.shell }} state=present
+  when: hardening_user is defined
 
 - name: Add RSA key to the remote host"
-  authorized_key: user='{{ hardening.user }}' key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  authorized_key: user='{{ hardening_user.id }}' key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  when: hardening_user is defined
 
 - name: Make logwatch mail weekly
-  action: lineinfile dest=/etc/cron.weekly/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ hardening.admin_email }} --detail high" state=present create=yes
+  lineinfile: dest=/etc/cron.weekly/00logwatch regexp="^/usr/sbin/logwatch" line="/usr/sbin/logwatch --output mail --mailto {{ hardening_admin_email }} --detail high" state=present create=yes
 
 - name: Enable automatic security updates
   apt: pkg=unattended-upgrades
@@ -45,4 +46,18 @@
     - { key: 'PermitRootLogin', value: 'no'}
     - { key: 'PasswordAuthentication', value: 'no'}
     - { key: 'X11Forwarding', value: 'no'}
+    - { key: 'UsePAM', value: 'no'}
   notify: restart ssh
+
+- name: OpenSSH allow only very strong crypto 
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    state=present
+    regexp='^#?{{ item.key }}'
+    line='{{ item.key }} {{ item.value }}'
+  with_items:
+    - { key: 'Ciphers', value: 'aes256-ctr'}
+    - { key: 'MACs', value: 'hmac-sha2-512'}
+  notify: restart ssh
+  when: hardening_duraconf is defined
+  
