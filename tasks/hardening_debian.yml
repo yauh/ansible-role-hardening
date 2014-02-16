@@ -58,5 +58,5 @@
     - { key: 'Ciphers', value: 'aes256-ctr'}
     - { key: 'MACs', value: 'hmac-sha2-512'}
   notify: restart ssh
-  when: hardening_duraconf is defined
+  when: hardening_strong_ciphers
   

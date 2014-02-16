@@ -4,5 +4,5 @@ hardening_user:
   password: password
   shell: /bin/bash
 hardening_admin_email: admin@example.org
-hardening_duraconf: true
+hardening_strong_ciphers: true
   

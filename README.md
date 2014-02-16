@@ -26,10 +26,15 @@ Role Variables
 
 The variables that can be passed to this role and a brief description about them are as follows.
 
-	hardening:
-	  user: username                 # new user account that gets created
+	hardening_user:
+	  id: username                   # new user account that gets created
 	  password: password             # password to be used
-	  admin_email: admin@example.org # where to send logwatch emails
+	  shell: user shell              # the user shell to use
+	hardening_admin_email: admin@example.org # where to send logwatch emails
+	hardening_strong_ciphers: whether to only allow very string ciphers.
+
+You might not want to use only strong ciphers if you use other clients than openssh to connect to the servers.
+Examples include vzmigrate, and paramiko which is used by fabric. These programs would not be able to connect to the server if only the strongest ciphers are active.
 
 Examples
 ========
@@ -40,6 +45,12 @@ Set up on all hosts
 	  sudo: True
 	  roles:
 	     - { role: role-hardening}
+	  vars:
+	    hardening_user:
+	      id: myuser
+	      password: pwd
+	      shell: /bin/bash
+	    hardening_admin_email: myuser@example.com
 
 
 Dependencies
