@@ -46,7 +46,6 @@
     - { key: 'PermitRootLogin', value: 'no'}
     - { key: 'PasswordAuthentication', value: 'no'}
     - { key: 'X11Forwarding', value: 'no'}
-    - { key: 'UsePAM', value: 'no'}
   notify: restart ssh
 
 - name: OpenSSH allow only very strong crypto 
