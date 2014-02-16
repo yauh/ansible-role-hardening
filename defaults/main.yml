@@ -1,6 +1,8 @@
 ---
-hardening:
-  user: myusername
-  user_password: password
-  admin_email: admin@example.org
+hardening_user:
+  id: x1
+  password: password
+  shell: /bin/bash
+hardening_admin_email: admin@example.org
+hardening_strong_ciphers: true
   
