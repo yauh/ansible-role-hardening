@@ -31,7 +31,7 @@ The variables that can be passed to this role and a brief description about them
 	  password: password             # password to be used
 	  shell: user shell              # the user shell to use
 	hardening_admin_email: admin@example.org # where to send logwatch emails
-	hardening_strong_ciphers: true   # whether to only allow very string ciphers.
+	hardening_strong_ciphers: true   # whether to only allow very strong ciphers.
 
 You might not want to use only strong ciphers if you use other clients than openssh to connect to the servers.
 Examples include vzmigrate, and paramiko which is used by fabric. These programs would not be able to connect to the server if only the strongest ciphers are active.
