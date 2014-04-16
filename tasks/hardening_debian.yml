@@ -30,14 +30,14 @@
 - name: Configure automatic security update
   template: dest=/etc/apt/apt.conf.d/50unattended-upgrades
             src=unattended-upgrades.j2
-            mode=0644
+            mode=0640
             group=adm
             backup=yes
 
 - name: Configure automatic updates settings
   template: dest=/etc/apt/apt.conf.d/02periodic
             src=apt-periodic.j2
-            mode=0644
+            mode=0640
             group=adm
             backup=yes
 
