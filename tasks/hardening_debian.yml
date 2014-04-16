@@ -11,7 +11,7 @@
     - lynis
 
 - name: Set up an account"
-  user: home=/home/{{ hardening_user.id }} name={{ hardening_user.id }} groups=sudo password={{ hardening_user.password }} shell={{ hardening_user.shell }} state=present
+  user: home=/home/{{ hardening_user.id }} name={{ hardening_user.id }} groups=sudo,adm password={{ hardening_user.password }} shell={{ hardening_user.shell }} state=present
   when: hardening_user.id is defined
 
 - name: Add RSA key to the remote host"
@@ -25,15 +25,20 @@
   apt: pkg=unattended-upgrades
        state=latest
        update_cache=yes
+       cache_valid_time=7200
 
 - name: Configure automatic security update
   template: dest=/etc/apt/apt.conf.d/50unattended-upgrades
             src=unattended-upgrades.j2
+            mode=0644
+            group=adm
             backup=yes
 
 - name: Configure automatic updates settings
   template: dest=/etc/apt/apt.conf.d/02periodic
             src=apt-periodic.j2
+            mode=0644
+            group=adm
             backup=yes
 
 - name: Make OpenSSH secure(r)
