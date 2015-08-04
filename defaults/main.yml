@@ -1,8 +1,8 @@
 ---
 hardening_user:
   id: x1
-  password: password
+  # use mkpasswd --method=SHA-512 to create passwords
+  password: $6$NoH3ssCjH$1kF2k7scCIM00hV4EqkkHrxltJnznVJo8oNsELADWfyIEjWlj4We.w/DhHb/0ACrAr9CtTR0Ch6R8/ktUpxPH0 # password
   shell: /bin/bash
 hardening_admin_email: admin@example.org
-hardening_strong_ciphers: true
-  
+ssh_strong_ciphers: true

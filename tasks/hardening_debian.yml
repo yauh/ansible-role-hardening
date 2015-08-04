@@ -53,7 +53,7 @@
     - { key: 'X11Forwarding', value: 'no'}
   notify: restart ssh
 
-- name: OpenSSH allow only very strong crypto 
+- name: OpenSSH allow only very strong crypto
   lineinfile:
     dest=/etc/ssh/sshd_config
     state=present
@@ -63,5 +63,4 @@
     - { key: 'Ciphers', value: 'aes256-ctr'}
     - { key: 'MACs', value: 'hmac-sha2-512'}
   notify: restart ssh
-  when: hardening_strong_ciphers
-  
+  when: ssh_strong_ciphers
