@@ -30,21 +30,21 @@
 
 - name: Configure automatic security update
   template: dest=/etc/apt/apt.conf.d/50unattended-upgrades
-            src=templates/unattended-upgrades.j2
+            src=unattended-upgrades.j2
             mode=0640
             group=adm
             backup=yes
 
 - name: Configure automatic updates settings
   template: dest=/etc/apt/apt.conf.d/02periodic
-            src=templates/apt-periodic.j2
+            src=apt-periodic.j2
             mode=0640
             group=adm
             backup=yes
 
 - name: Configure fail2ban
   template: dest=/etc/fail2ban/jail.local
-            src=templates/jail.local.j2
+            src=jail.local.j2
             mode=0640
             group=adm
             backup=yes
@@ -52,7 +52,7 @@
 
 - name: Configure logwatch
   template: dest=/etc/logwatch/conf/logwatch.conf
-            src=templates/logwatch.conf.j2
+            src=logwatch.conf.j2
             mode=0640
             group=adm
             backup=yes
