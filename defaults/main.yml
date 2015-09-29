@@ -2,4 +2,6 @@
 hardening_ansible_user: ansible # this is the deployment user
 hardening_ansible_password: password # password for deployment user
 hardening_admin_email: admin@example.org
+admin_email: admin@example.org
 ssh_strong_ciphers: true
+logwatch_detail: low # detail for logwatch emails, low|medium|high
