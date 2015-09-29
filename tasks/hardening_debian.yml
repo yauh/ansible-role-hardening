@@ -98,3 +98,4 @@
   when: ssh_strong_ciphers
 
 - name: Finish hardening and restart ssh
+  service: name=ssh state=restarted
