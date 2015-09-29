@@ -1,2 +1,8 @@
 - name: restart ssh
   service: name=ssh state=restarted
+- name: restart fail2ban
+  action: service name=fail2ban state=restarted
+- name: restart rsyslog
+  action: service name=rsyslog state=restarted
+- name: restart ufw
+  action: service name=ufw state=restarted
