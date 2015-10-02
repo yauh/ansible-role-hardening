@@ -4,6 +4,7 @@
   apt: pkg={{ item }} state=latest
   with_items:
     - fail2ban
+    - aide
     - logwatch
     - unattended-upgrades
     - chkrootkit
