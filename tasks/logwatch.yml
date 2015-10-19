@@ -1,0 +1,11 @@
+- name: Install recommended security packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - logwatch
+
+- name: Configure logwatch
+  template: dest=/etc/logwatch/conf/logwatch.conf
+            src=logwatch.conf.j2
+            mode=0640
+            group=adm
+            backup=yes

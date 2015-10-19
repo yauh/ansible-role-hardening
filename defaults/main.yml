@@ -6,3 +6,4 @@ hardening_ansible_user: ansible # this is the deployment user
 logwatch_detail: low # detail for logwatch emails, low|medium|high
 ssh_port: 22
 ssh_strong_ciphers: true
+install_logwatch: true

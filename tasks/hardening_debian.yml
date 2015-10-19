@@ -5,7 +5,6 @@
   with_items:
     - fail2ban
     - aide
-    - logwatch
     - unattended-upgrades
     - chkrootkit
     - libpam-cracklib
@@ -51,12 +50,8 @@
             backup=yes
   notify: restart fail2ban
 
-- name: Configure logwatch
-  template: dest=/etc/logwatch/conf/logwatch.conf
-            src=logwatch.conf.j2
-            mode=0640
-            group=adm
-            backup=yes
+- include: logwatch.yml
+  when: install_logwatch == 'true'
 
 - name: Get RKHunter
   get_url: url=http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz dest=/usr/local/src/rkhunter-1.4.2.tar.gz
