@@ -3,4 +3,4 @@
 - name: restart fail2ban
   service: name=fail2ban state=restarted
 - name: reload sysctl.conf
-  command: /sbin/sysctl -p
+  command: /sbin/sysctl --system

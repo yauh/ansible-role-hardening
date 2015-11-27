@@ -57,22 +57,35 @@
 - include: logwatch.yml
   when: install_logwatch == 'true'
 
+- name: Check if rkhunter binary exists
+  stat: path=/usr/bin/rkhunter
+  register: rkhunter_exists
+
 - name: Get RKHunter
   get_url: url=http://downloads.sourceforge.net/project/rkhunter/rkhunter/1.4.2/rkhunter-1.4.2.tar.gz dest=/usr/local/src/rkhunter-1.4.2.tar.gz
+  when: rkhunter_exists.stat.exists == False
 
 - name: extract RKHunter
   unarchive: src=/usr/local/src/rkhunter-1.4.2.tar.gz dest=/usr/local/src copy=no
+  when: rkhunter_exists.stat.exists == False
 
 - name: install RKHunter
   shell: ./installer.sh --layout /usr --install
   args:
     chdir: /usr/local/src/rkhunter-1.4.2
+  when: rkhunter_exists.stat.exists == False
+
+- name: Check if lynis binary exists
+  stat: path=/usr/local/src/lynis/lynis
+  register: lynis_exists
 
 - name: Get lynis 2.1.1
   get_url: url=https://cisofy.com/files/lynis-2.1.1.tar.gz dest=/usr/local/src
+  when: lynis_exists.stat.exists == False
 
 - name: Extract lynis
   unarchive: src=/usr/local/src/lynis-2.1.1.tar.gz dest=/usr/local/src copy=no
+  when: lynis_exists.stat.exists == False
 
 - name: Change default UMASK in /etc/login.defs
   lineinfile:
@@ -98,6 +111,8 @@
     name={{ item.key }}
     value={{ item.value }}
   with_items:
+    - { key: 'kernel.core_uses_pid', value: '1'}
+    - { key: 'kernel.sysrq', value: '0'}
     - { key: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1'}
     - { key: 'net.ipv4.conf.all.accept_source_route', value: '0'}
     - { key: 'net.ipv4.conf.default.accept_source_route', value: '0'}
@@ -106,8 +121,11 @@
     - { key: 'net.ipv4.conf.default.send_redirects', value: '0'}
     - { key: 'net.ipv4.tcp_max_syn_backlog', value: '2048'}
     - { key: 'net.ipv4.tcp_synack_retries', value: '2'}
+    - { key: 'net.ipv4.tcp_syncookies', value: '1'}
+    - { key: 'net.ipv4.tcp_timestamps', value: '0'}
     - { key: 'net.ipv4.tcp_syn_retries', value: '5'}
     - { key: 'net.ipv4.conf.all.log_martians', value: '1'}
+    - { key: 'net.ipv4.conf.default.log_martians', value: '1'}
     - { key: 'net.ipv4.icmp_ignore_bogus_error_responses', value: '1'}
     - { key: 'net.ipv4.conf.all.accept_redirects', value: '0'}
     - { key: 'net.ipv6.conf.all.accept_redirects', value: '0'}
@@ -125,10 +143,14 @@
   with_items:
     - { key: 'Port', value: '{{ssh_port}}'}
     - { key: 'PermitRootLogin', value: 'no'}
+    - { key: 'PermitEmptyPasswords', value: 'no'}
+    - { key: 'IgnoreRhosts', value: 'yes'}
     - { key: 'PasswordAuthentication', value: 'no'}
     - { key: 'PubkeyAuthentication', value: 'yes'}
+    - { key: 'UsePrivilegeSeparation', value: 'yes'}
     - { key: 'ChallengeResponseAuthentication', value: 'no'}
     - { key: 'X11Forwarding', value: 'no'}
+    - { key: 'PrintMotd', value: 'no'}
 
 - name: OpenSSH allow only very strong crypto
   lineinfile:
