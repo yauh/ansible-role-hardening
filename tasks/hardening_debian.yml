@@ -1,26 +1,30 @@
 ---
 # file: roles/hardening/tasks/hardening_debian.yml
+# TODO: http://www.newnettechnologies.com/linux-server-hardening.html
 - name: Install recommended security packages
   apt: pkg={{ item }} state=latest
   with_items:
-    - fail2ban
+    - acct
     - aide
-    - unattended-upgrades
-    - chkrootkit
-    - libpam-cracklib
     - apt-show-versions
     - auditd
+    - binutils
+    - chkrootkit
     - clamav
     - clamav-daemon
-    - binutils
-    - libreadline5
-    - libruby
-    - ruby
-    - ssl-cert
-    - unhide.rb
-    - mailutils
+    - debsums
+    - fail2ban
     - iptables-persistent
     - libdate-manip-perl
+    - libpam-cracklib
+    - libreadline5
+    - libruby
+    - mailutils
+    - ruby
+    - ssl-cert
+    - sysstat
+    - unattended-upgrades
+    - unhide.rb
 
 - name: Enable automatic security updates
   apt: pkg=unattended-upgrades
@@ -69,6 +73,48 @@
 
 - name: Extract lynis
   unarchive: src=/usr/local/src/lynis-2.1.1.tar.gz dest=/usr/local/src copy=no
+
+- name: Change default UMASK in /etc/login.defs
+  lineinfile:
+    dest=/etc/login.defs
+    state=present
+    regexp='^#?{{ item.key }}'
+    line='{{ item.key }} {{ item.value }}'
+  with_items:
+    - { key: 'UMASK', value: '027'}
+
+- name: Change default umask in /etc/init.d/rc
+  lineinfile:
+    dest=/etc/init.d/rc
+    state=present
+    regexp='^#?{{ item.key }}'
+    line='{{ item.key }} {{ item.value }}'
+  with_items:
+    - { key: 'umask', value: '027'}
+
+- name: Adjust kernel options
+  lineinfile:
+    dest=/etc/sysctl.conf
+    state=present
+    regexp='^#?{{ item.key }}'
+    line='{{ item.key }} = {{ item.value }}'
+  with_items:
+    - { key: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1'}
+    - { key: 'net.ipv4.conf.all.accept_source_route', value: '0'}
+    - { key: 'net.ipv4.conf.default.accept_source_route', value: '0'}
+    - { key: 'net.ipv6.conf.default.accept_source_route', value: '0'}
+    - { key: 'net.ipv4.conf.all.send_redirects', value: '0'}
+    - { key: 'net.ipv4.conf.default.send_redirects', value: '0'}
+    - { key: 'net.ipv4.tcp_max_syn_backlog', value: '2048'}
+    - { key: 'net.ipv4.tcp_synack_retries', value: '2'}
+    - { key: 'net.ipv4.tcp_syn_retries', value: '5'}
+    - { key: 'net.ipv4.conf.all.log_martians', value: '1'}
+    - { key: 'net.ipv4.icmp_ignore_bogus_error_responses', value: '1'}
+    - { key: 'net.ipv4.conf.all.accept_redirects', value: '0'}
+    - { key: 'net.ipv6.conf.all.accept_redirects', value: '0'}
+    - { key: 'net.ipv4.conf.default.accept_redirects', value: '0'}
+    - { key: 'net.ipv6.conf.default.accept_redirects', value: '0'}
+    - { key: 'net.ipv4.icmp_echo_ignore_all', value: '1'}
 
 - name: Make OpenSSH secure(r)
   lineinfile:
