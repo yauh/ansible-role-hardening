@@ -4,7 +4,6 @@
 - name: Install recommended security packages
   apt: pkg={{ item }} state=latest
   with_items:
-    - acct
     - aide
     - apt-show-versions
     - auditd
