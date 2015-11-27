@@ -93,11 +93,10 @@
     - { key: 'umask', value: '027'}
 
 - name: Adjust kernel options
-  lineinfile:
-    dest=/etc/sysctl.conf
+  sysctl:
     state=present
-    regexp='^#?{{ item.key }}'
-    line='{{ item.key }} = {{ item.value }}'
+    name={{ item.key }}
+    value= {{ item.value }}
   with_items:
     - { key: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1'}
     - { key: 'net.ipv4.conf.all.accept_source_route', value: '0'}
@@ -115,6 +114,7 @@
     - { key: 'net.ipv4.conf.default.accept_redirects', value: '0'}
     - { key: 'net.ipv6.conf.default.accept_redirects', value: '0'}
     - { key: 'net.ipv4.icmp_echo_ignore_all', value: '1'}
+  notify: reload sysctl.conf
 
 - name: Make OpenSSH secure(r)
   lineinfile:
@@ -138,6 +138,7 @@
     - { key: 'Ciphers', value: 'aes256-ctr'}
     - { key: 'MACs', value: 'hmac-sha2-512,hmac-md5'}
   when: ssh_strong_ciphers
+  notify: restart ssh
 
 - name: Finish hardening and restart ssh
   service: name=ssh state=restarted
