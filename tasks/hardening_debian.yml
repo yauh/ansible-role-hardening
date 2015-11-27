@@ -96,7 +96,7 @@
   sysctl:
     state=present
     name={{ item.key }}
-    value= {{ item.value }}
+    value={{ item.value }}
   with_items:
     - { key: 'net.ipv4.icmp_echo_ignore_broadcasts', value: '1'}
     - { key: 'net.ipv4.conf.all.accept_source_route', value: '0'}
@@ -126,6 +126,8 @@
     - { key: 'Port', value: '{{ssh_port}}'}
     - { key: 'PermitRootLogin', value: 'no'}
     - { key: 'PasswordAuthentication', value: 'no'}
+    - { key: 'PubkeyAuthentication', value: 'yes'}
+    - { key: 'ChallengeResponseAuthentication', value: 'no'}
     - { key: 'X11Forwarding', value: 'no'}
 
 - name: OpenSSH allow only very strong crypto
@@ -135,8 +137,9 @@
     regexp='^#?{{ item.key }}'
     line='{{ item.key }} {{ item.value }}'
   with_items:
-    - { key: 'Ciphers', value: 'aes256-ctr'}
-    - { key: 'MACs', value: 'hmac-sha2-512,hmac-md5'}
+    - { key: 'Ciphers', value: 'aes256-ctr,aes192-ctr,aes128-ctr'}
+    - { key: 'MACs', value: 'hmac-sha2-512,hmac-sha2-256,hmac-ripemd160'}
+    - { key: 'KexAlgorithms', value: 'diffie-hellman-group-exchange-sha256'}
   when: ssh_strong_ciphers
   notify: restart ssh
 
