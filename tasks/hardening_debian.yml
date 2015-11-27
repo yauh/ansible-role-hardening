@@ -26,6 +26,9 @@
     - unattended-upgrades
     - unhide.rb
 
+- name: Enable sysstat
+  service: name=sysstat enabled=yes state=started
+
 - name: Enable automatic security updates
   apt: pkg=unattended-upgrades
        state=latest
