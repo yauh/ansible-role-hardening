@@ -161,9 +161,9 @@
     regexp='^#?{{ item.key }}'
     line='{{ item.key }} {{ item.value }}'
   with_items:
-    - { key: 'Ciphers', value: 'aes256-ctr,aes192-ctr,aes128-ctr'}
-    - { key: 'MACs', value: 'hmac-sha2-512,hmac-sha2-256,hmac-ripemd160'}
-    - { key: 'KexAlgorithms', value: 'diffie-hellman-group-exchange-sha256'}
+    - { key: 'Ciphers', value: 'chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr'}
+    - { key: 'MACs', value: 'hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160'}
+    - { key: 'KexAlgorithms', value: 'curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256'}
   when: ssh_strong_ciphers
   notify: restart ssh
 
