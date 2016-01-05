@@ -9,3 +9,11 @@
             mode=0640
             group=adm
             backup=yes
+
+- name: stat daily_logwatch_cron
+  stat: path=/etc/cron.daily/00logwatch
+  register: daily_logwatch_cron
+
+- name: Move logwatch cron from daily to weekly
+  command: creates="/etc/cron.weekly/00logwatch" mv /etc/cron.daily/00logwatch /etc/cron.weekly/00logwatch
+  when: daily_logwatch_cron.stat.exists
